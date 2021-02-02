@@ -1,6 +1,7 @@
 package com.example.makejson;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,12 +52,15 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_bar,menu);
         MenuItem menuItem = menu.findItem(R.id.search_icon);
         SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setIconifiedByDefault(false);
+        searchView.setQueryHint("Cari Disini");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 JSON_URL = "http://www.omdbapi.com/?apikey=4cb6197c&s="+query+"";
                 new GetData().execute();
                 movieList.clear();
+                searchView.clearFocus();
                 return true;
             }
 
@@ -65,6 +69,23 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+        MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                Toast.makeText(MainActivity.this, "onMenuItemActionExpand dipanggil", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                Toast.makeText(MainActivity.this, "onMenuItemActionCollapse dipanggil", Toast.LENGTH_SHORT).show();
+                movieList.clear();
+                recyclerView.setAdapter(null);
+
+                return true;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
