@@ -69,23 +69,20 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {
+
+        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                Toast.makeText(MainActivity.this, "onMenuItemActionExpand dipanggil", Toast.LENGTH_SHORT).show();
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                Toast.makeText(MainActivity.this, "onMenuItemActionCollapse dipanggil", Toast.LENGTH_SHORT).show();
                 movieList.clear();
                 recyclerView.setAdapter(null);
-
                 return true;
             }
         });
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -100,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 InputStreamReader isr = new InputStreamReader(urlConnection.getInputStream());
                 int data = isr.read();
                 while(data != -1){
-                    current += (char) data;
+                    current += (char) isr.read();
                     data= isr.read();
                 }
                 return current;
