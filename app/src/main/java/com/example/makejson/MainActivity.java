@@ -88,16 +88,19 @@ public class MainActivity extends AppCompatActivity {
 
     public class GetData extends AsyncTask<String,String,String>{
 
+        ProgressDialog progressDialog;
         @Override
         protected String doInBackground(String... strings) {
+
             String current = "";
             try {
                 HttpURLConnection urlConnection = null;
                 urlConnection = (HttpURLConnection) new URL(JSON_URL).openConnection();
+                urlConnection.setRequestMethod("GET");
                 InputStreamReader isr = new InputStreamReader(urlConnection.getInputStream());
                 int data = isr.read();
                 while(data != -1){
-                    current += (char) isr.read();
+                    current += (char) data;
                     data= isr.read();
                 }
                 return current;
@@ -108,7 +111,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = ProgressDialog.show(MainActivity.this,"Mencari..","Tunggu",false,false);
+        }
+
+        @Override
         protected void onPostExecute(String s) {
+            progressDialog.dismiss();
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 JSONArray jsonArray = jsonObject.getJSONArray("Search");
